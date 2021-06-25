@@ -343,7 +343,6 @@
     <Compile Include="Models\Inicio.generated.cs" />
     <Compile Include="Models\Member.generated.cs" />
     <Compile Include="Models\ModuloDeContenido.generated.cs" />
-    <Compile Include="Models\ModuloNoticias.generated.cs" />
     <Compile Include="Models\ModuloNoticiasAjustes.generated.cs" />
     <Compile Include="Models\Noticia.generated.cs" />
     <Compile Include="Models\Noticias.generated.cs" />
