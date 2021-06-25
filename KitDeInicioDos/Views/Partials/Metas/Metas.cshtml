@@ -1,0 +1,33 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<ISEO>
+
+@*
+    <ISEO> this is Models Builder accessing it via Interface. further reading link below
+    https://our.umbraco.com/documentation/reference/templating/modelsbuilder/Using-Interfaces
+*@
+
+@using Umbraco.Web.Models
+@{
+    AjustesGenerales ajustes = (AjustesGenerales)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("ajustesGenerales").FirstOrDefault();
+    var fotoOrigen = ajustes.URlbase;
+    var fotoTemporral = "logo.png";
+
+    var nombreDelSitio = ajustes.NombreDelSitio;
+    var favicon = ajustes.Favicon;
+    var faviconUrl = string.Empty;
+    if(favicon != null)
+    {
+        faviconUrl = favicon.Url();
+    }
+    else if(!string.IsNullOrWhiteSpace(fotoOrigen))
+    {
+        faviconUrl = $"{fotoOrigen}{fotoTemporral}";
+    }
+
+
+    var seoTitle = Model.SeoTitulo;
+    var seoDescription = Model.SeoDescripcion;
+}
+
+<meta name="description" content="@Model.SeoDescripcion">
+<title>@Model.SeoTitulo @nombreDelSitio</title>
+<link href="@faviconUrl" rel="icon" type="image/png">

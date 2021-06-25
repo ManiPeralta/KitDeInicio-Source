@@ -1,0 +1,35 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@inherits UmbracoViewPage<Umbraco.Core.Models.Blocks.BlockListItem<ModuloNoticias, ModuloNoticiasAjustes>>
+
+@{
+    var contentModel = Model.Content as ModuloNoticias;
+    var contentSettings = Model.Settings as ModuloNoticiasAjustes;
+
+    var titulo = contentModel.Titulo;
+    var subTitulo = contentModel.Subtitulo;
+    var autor = contentModel.Autor;
+    var fechaPublicada = contentModel.FechaDePublicacion;
+    var eslogan = contentModel.Eslogan;
+    var categorias = contentModel.Categorias;
+    var miniatura = contentModel.Miniatura;
+
+
+}
+
+@Model.Content.Titulo
+
+<section class="">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>@titulo</p>
+                <p>@subTitulo</p>
+                <p>@autor</p>
+                <p>@fechaPublicada</p>
+                <p>@eslogan</p>
+                <p>@categorias</p>
+                <p>@miniatura</p>
+            </div>
+        </div>
+    </div>
+</section>

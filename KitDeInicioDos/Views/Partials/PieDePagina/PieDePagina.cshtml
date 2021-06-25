@@ -1,0 +1,15 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+
+@using Umbraco.Web.Models
+@{
+    var ajustes = Umbraco.ContentAtRoot().DescendantsOrSelfOfType("ajustesGenerales").FirstOrDefault();
+
+    var estilo = ajustes.Value<string>("estiloPieDepagina");
+}
+
+<section class="@(estilo != null ? $"mp{estilo}"  : "")">
+    <footer class="container pt-5 pb-5">
+        <p class="float-right"><a href="#">Arriva</a></p>
+        <a href="http://manoamano.co.uk" target="_blank" rel="noopener"> @DateTime.Now.Year Todos los derechos reservados © Mano a mano</a>
+    </footer>
+</section>

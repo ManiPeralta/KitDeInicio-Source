@@ -1,0 +1,45 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+
+@using Umbraco.Web.Models
+@{
+    AjustesGenerales ajustes = (AjustesGenerales)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("ajustesGenerales").FirstOrDefault();
+    var fotoOrigen = ajustes.URlbase;
+    var fotoTemporral = "logo.png";
+    var titulo = string.Empty;
+    var enlaces = ajustes.MenuPrincipal;
+    if (ajustes != null)
+    {
+        titulo = ajustes.NombreDelSitio;
+    }
+    var currentPage = Model.Name;
+    var logotipo = ajustes.Logotipo;
+    var estilo = ajustes.EstiloMenu.ToString() != null ? ajustes.EstiloMenu : "000000";
+}
+
+<nav class="navbar navbar-expand-lg  @(estilo != null ? $"mp{estilo}"  : "")">
+    <div class="container">
+        @if (logotipo != null)
+        {
+            <a class="navbar-brand" href="/"><img src="@logotipo.Url()" alt="@logotipo.Name" style="height:60px" /> </a>
+        }
+        else if(!string.IsNullOrWhiteSpace(fotoOrigen))
+        {
+            <a class="navbar-brand" href="/"><img src="@($"{fotoOrigen}{fotoTemporral}")" alt="Logo" style="height: 60px" /> </a>
+        }
+
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+
+                @foreach (var page in enlaces)
+                {
+                    <li class="nav-item @(currentPage == page.Name ? "activa" : "" ) ">
+                        <a class="nav-link" href="@page.Url">@page.Name <span class="sr-only">(current)</span></a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>

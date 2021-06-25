@@ -1,0 +1,28 @@
+﻿@inherits UmbracoViewPage<Umbraco.Core.Models.Blocks.BlockListItem>
+
+@{
+    var contentModel = Model.Content as FormularioDeContacto;
+    var settingsModel = Model.Settings as FormularioDeContactoAjustes;
+    var titulo = !string.IsNullOrEmpty(contentModel.Titulo) ? contentModel.Titulo : "" ;
+    var instrucciones = !string.IsNullOrEmpty(contentModel.Instrucciones) ? contentModel.Instrucciones : "";
+    var estilo = settingsModel.Estilo;
+}
+
+<section class="pt-5 pb-5 @(estilo != null ? $"mp{estilo}"  : "")">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title">
+
+                    <h2>@titulo</h2>
+                    <p>@instrucciones</p>
+
+                </div>
+                @{
+                    @Html.Action("DesplegardFormulario", "Contact")
+                }
+            </div>
+
+        </div>
+    </div>
+</section>

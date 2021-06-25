@@ -1,0 +1,71 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<ContentModels.Busqueda>
+@using ContentModels = Umbraco.Web.PublishedModels;
+@*
+    https://our.umbraco.com/Documentation/Reference/Searching/Examine/*@
+@section cabecera
+{
+    <meta name="description" content="@Model.SeoDescripcion">
+    <title>@Model.SeoTitulo</title>
+}
+@{
+    Layout = "Master.cshtml";
+
+    var searchQuery = Request.QueryString["query"];
+    IEnumerable<PublishedSearchResult> searchResults;
+    var resultCount = 0;
+    // is there a search?
+    if (!string.IsNullOrEmpty(searchQuery))
+    {
+        // ask umbraco the search for the term and return the result
+        searchResults = Umbraco.ContentQuery.Search(searchQuery, string.Empty, "InternalIndex") // "InternalIndex" is part of the Umbraco search
+            .Where(x => x.Content.IsDocumentType("noticia")); // this limits the search  to only returning news
+
+        resultCount = searchResults != null && searchResults.Any() ? searchResults.Count() : 0;
+    }
+    else
+    {
+        searchResults = null;
+    }
+}
+
+@foreach (var block in Model.ContenidoPrincipal)
+{
+    @Html.Partial($"Bloques/{block.Content.ContentType.Alias}", block)
+}
+
+<section>
+    <div class="container p-5">
+        <form action="@Model.Url()" method="Get">
+            <input type="text" name="Query" placeholder="Search..." class="search-box" />
+            <button class="search-btn">Search</button>
+        </form>
+    </div>
+</section>
+
+@if (!string.IsNullOrEmpty(searchQuery))
+{
+    <section>
+        @if (resultCount == 0 || searchResults == null)
+        {
+            <div class="container p-5">
+                <text>
+                    No hay resultados para @searchQuery
+                </text>
+            </div>
+
+        }
+        else
+        {
+            <div class="container p-5">
+                <text>
+                    Encontramos @resultCount resultados
+                </text>
+                @foreach (var result in searchResults)
+                {
+                    <p><a href="@result.Content.Url()">@result.Content.Name</a></p>
+                }
+            </div>
+        }
+
+    </section>
+}

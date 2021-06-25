@@ -1,0 +1,70 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<ContentModels.Noticia>
+@using ContentModels = Umbraco.Web.PublishedModels;
+@using Umbraco.Core.PropertyEditors.ValueConverters;
+@using System.Globalization;
+@{
+    Layout = "Master.cshtml";
+
+    AjustesGenerales ajustes = (AjustesGenerales)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("ajustesGenerales").FirstOrDefault();
+    var fotoOrigen = ajustes.URlbase;
+    var fotoTemporral = "cactus.jpg";
+
+    var siteUrl = Request.Url.GetLeftPart(UriPartial.Authority);
+    var fotoRecortada = Model.Miniatura != null ? Model.Miniatura.GetCropUrl("Miniatura") : !string.IsNullOrWhiteSpace(fotoOrigen) ? $"{fotoOrigen}{fotoTemporral}" :  null;
+    var fotoPrincipal = Model.FotoPrincipal != null ? Model.FotoPrincipal.GetCropUrl("Mediana") : !string.IsNullOrWhiteSpace(fotoOrigen) ? $"{fotoOrigen}{fotoTemporral}" : null;
+}
+
+@section cabecera
+{
+    <meta property="og:title" content="@Model.Name" />
+    <meta property="og:description" content="@Model.Eslogan" />
+    <meta property="og:type" content="noticia" />
+    <meta property="og:image" content="@siteUrl@fotoRecortada" />
+}
+
+<section class="mp">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 pt-3">
+                <h1>@Model.Titulo</h1>
+                <p>By @Model.Autor</p>
+            </div>
+            <div class="col-md-12">
+                <p>@Model.FechaDePublicacion.ToString("d MMM yyyy", CultureInfo.CreateSpecificCulture("es-ES")) | @string.Join(",", Model.Categorias)</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="mp">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-8 pl-0">
+                @if (fotoPrincipal != null)
+                {
+                    <div class="mb-4 pl-3 pr-3"><img class="w-100" src="@fotoPrincipal" alt="Alternate Text" /> </div>
+                }
+
+                @Html.GetGridHtml(Model, "texto")
+            </div>
+            <div class="col-md-4">
+                @if (Model.Relacionados != null && Model.Relacionados.Count > 0)
+                {
+                    <h3>Relacionados</h3>
+                    foreach (var block in Model.Relacionados)
+                    {
+                        @Html.Partial($"Bloques/{block.Content.ContentType.Alias}", block)
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+

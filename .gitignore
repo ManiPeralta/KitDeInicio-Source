@@ -24,3 +24,18 @@
 
 # Ignore the Models Builder models out of date flag
 **/App_Data/Models/ood.flag
+
+
+.vs
+packages
+
+KitDeInicioDos/App_Data/cache/
+KitDeInicioDos/App_Data/Logs/
+KitDeInicioDos/App_Data/Models/
+KitDeInicioDos/App_Data/packages/
+KitDeInicioDos/App_Data/TEMP/
+
+KitDeInicioDos/obj
+KitDeInicioDos/Properties/
+KitDeInicioDos/Umbraco
+KitDeInicioDos/bin/

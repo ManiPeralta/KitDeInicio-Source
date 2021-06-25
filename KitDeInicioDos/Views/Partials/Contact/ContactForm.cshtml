@@ -1,0 +1,72 @@
+﻿@model kitDeInicioDos.ModelsView.ContactModel
+@using KitDeInicioDos.Controllers
+@using System.Web.Mvc.Html
+
+@{
+    Html.EnableClientValidation();
+    Html.EnableUnobtrusiveJavaScript();
+}
+@if (!string.IsNullOrEmpty(Model.RecaptchaSiteKey))
+{
+    <script src="https://www.google.com/recaptcha/api.js?render=@Model.RecaptchaSiteKey"></script>
+    <script>
+    grecaptcha.ready(function () {
+        grecaptcha.execute('@Model.RecaptchaSiteKey',
+            { action: 'contact_us' })
+            .then(function (token) { $('#GoogleCaptchaToken').val(token) });
+
+    });
+    </script>
+}
+@if ((string)TempData["status"] == "OK")
+{
+    <div class="container">
+        <div class="row">
+            <div class="col text-center ">
+                <i class="far fa-thumbs-up fa-5x"></i>
+                <div>
+                    Muchas gracias por su mensaje
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+else
+{
+    using (Html.BeginUmbracoForm<ContactController>("ResolverFormulario"))
+    {
+
+        @Html.ValidationSummary()
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            <span class="field-validation-valid" data-valmsg-for="Nombre" data-valmsg-replace="true"></span>
+            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-lg", placeholder = "Nombre", maxlength = "80" })
+        </div>
+
+        <div class="form-group">
+            <span class="field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control form-control-lg", placeholder = "Email", maxlength = "100" })
+        </div>
+
+        <div class="form-group">
+            <span class="field-validation-valid" data-valmsg-for="Tema"></span>
+            @Html.TextBoxFor(m => m.Tema, new { @class = "form-control form-control-lg", placeholder = "Tema", maxlength = "150" })
+        </div>
+
+        <div class="form-group">
+            <span class="field-validation-valid"></span>
+            @Html.TextAreaFor(m => m.Mensaje, new { @class = "form-control form-control-lg", placeholder = "Mensaje", maxlength = "500" })
+        </div>
+
+        <input type="hidden" name="GoogleCaptchaToken" id="GoogleCaptchaToken" />
+
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">Send</button>
+        </div>
+    }
+
+
+
+}

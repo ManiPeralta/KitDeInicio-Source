@@ -1,0 +1,44 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
+@inherits UmbracoViewPage<Umbraco.Core.Models.Blocks.BlockListItem>
+
+@{
+    AjustesGenerales ajustes = (AjustesGenerales)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("ajustesGenerales").FirstOrDefault();
+    var fotoOrigen = ajustes.URlbase;
+    var fotoTemporral = "salar-seco.jpg";
+
+
+    var contentModel = Model.Content as ContenidoRelacionado;
+    var settingsModel = Model.Settings as ContenidoRelacionadoAjustes;
+    var estilo = settingsModel.Estilo;
+    //var fotoRelacionada = string.Empty;
+
+    if (contentModel.Relacionados != null && contentModel.Relacionados.Any())
+    {
+    <div class=" @(estilo != null ? $"mp{estilo}"  : "")">
+    
+        @foreach (var item in contentModel.Relacionados)
+        {
+            Noticia relacionados = (Noticia)item;
+            if (relacionados != null && !string.IsNullOrEmpty(relacionados.Titulo))
+            {
+                var fotoRelacionada = relacionados.Miniatura != null  ? relacionados.Miniatura.Url() : !string.IsNullOrWhiteSpace(fotoOrigen) ? $"{fotoOrigen}{fotoTemporral}" : null;
+                <div class=" mb-4">
+                    <div class="card mb-12 box-shadow">
+                        <img class="card-img-top" alt="" style="height: 225px; width: 100%; display: block;" src="@fotoRelacionada" data-holder-rendered="true">
+                        <div class="card-body ">
+                            <h4 class="display-5"><a class="text-dark" href="@relacionados.Url()"> @relacionados.Titulo</a></h4>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <p>@relacionados.Eslogan</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        }
+
+    </div>
+    }
+}

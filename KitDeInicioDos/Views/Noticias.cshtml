@@ -1,0 +1,148 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<ContentModels.Noticias>
+@using ContentModels = Umbraco.Web.PublishedModels;
+@using Umbraco.Core.PropertyEditors.ValueConverters;
+
+@section cabecera
+{
+    <meta name="description" content="@Model.SeoDescripcion">
+    <title>@Model.SeoTitulo</title>
+}
+@{
+    Layout = "Master.cshtml";
+
+    AjustesGenerales ajustes = (AjustesGenerales)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("ajustesGenerales").FirstOrDefault();
+    var fotoOrigen = ajustes.URlbase;
+
+    // get a handle of the news 
+    Noticias noticias = (Noticias)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("noticias").FirstOrDefault();
+
+    var fotoTemporral = "cactus.jpg";
+
+    var nuevas = noticias.Children;
+
+    // create a list to gather all categories
+    var listaEtiquetas = new List<string>();
+
+    //Check if there has been a filter query
+    if (!string.IsNullOrEmpty(Request.QueryString["cat"]))
+    {
+        // If yes, then the news will be filtered by categories
+        nuevas = noticias.Children.Where(f => f.Value<string[]>("categorias").Contains(Request.QueryString["cat"]));
+    }
+    else
+    {
+        // else, it displays all the news
+        nuevas = noticias.Children.Where(x => x.IsVisible()).OrderByDescending(x => x.CreateDate); ;
+    }
+
+
+    // we loop through all categories and add them to listaEtiquetas obj
+    foreach (var item in nuevas)
+    {
+        Noticia q = (Noticia)item;
+        var joined = string.Join(",", q.Categorias);
+        var split = joined.Split(',');
+        foreach (var s in split)
+        {
+            if (!listaEtiquetas.Contains(s))
+            {
+                listaEtiquetas.Add(s);
+            }
+        }
+    }
+
+    <!--Pagination-->
+
+    <!--What's the pge size? -  the number of items per page-->
+    const int pageSize = 2;
+
+    <!--Calculate No page needed-->
+    var numberPages = (int)Math.Ceiling((double)nuevas.Count() / (double)pageSize);
+
+    <!--Currently selected page-->
+    var selectedPage = 1;
+    if (!string.IsNullOrEmpty(Request.QueryString["page"]))
+    {
+        int.TryParse(Request.QueryString["page"], out selectedPage);
+        // range check
+        if(selectedPage <= 0 || selectedPage > numberPages)
+        {
+            selectedPage = 1;
+        }
+    }
+
+    // need to understand what's happening here
+    // ((5 - 1) * 4).Take(4)
+
+    nuevas = nuevas.Skip((selectedPage - 1) * pageSize).Take(pageSize).ToList();
+
+}
+
+
+@foreach (var block in Model.ContenidoPrincipal)
+{
+    @Html.Partial($"Bloques/{block.Content.ContentType.Alias}", block)
+}
+
+<section class="">
+    <div class="container pt-5 pb-5">
+        <div class="row p-2">
+            <div class="col-md-8">
+                <div class="row">
+                    @foreach (var item in nuevas)
+                    {
+                        Noticia noticia = (Noticia)item;
+                        var niniaturaRecortada = noticia.Miniatura != null ? noticia.Miniatura.GetCropUrl("Miniatura") : !string.IsNullOrWhiteSpace(fotoOrigen) ? $"{fotoOrigen}{fotoTemporral}" : "";
+                        <div class="col-md-2 mb-2  bg-light">
+                            <a href="@item.Url()" class="text-dark"><img class="card-img-top" alt="Thumbnail" style="height: 100px; width: 100%; display: block;" src="@niniaturaRecortada" data-holder-rendered="true"></a>
+</div>
+                        <div class="col-md-10 mb-2  bg-light">
+                            <div class="card-body">
+                                <h3><a href="@item.Url()" class="text-dark">@noticia.Name</a></h3>
+                                <p class="card-text">@noticia.Eslogan</p>
+
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-4 ">
+                <div class="bg-light p-2 pl-3">
+                    <p class="pl-3 pt-3"><a href="@Model.Url()" class="btn btn-primary">Clear filter</a></p>
+                    <ul>
+                        @foreach (var categoria in listaEtiquetas.OrderBy(o => o))
+                        {
+                            string claseActiva = "";
+                            if (categoria == Request.QueryString["cat"])
+                            {
+                                claseActiva = "activa";
+                            }
+                            <li class="@claseActiva"><a href="@Model.Url()?cat=@categoria">@categoria</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        @if (numberPages > 1)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item @(selectedPage <=1 ? "disabled" : "")"><a class="page-link" href="@($"{Model.Url()}?page={selectedPage - 1}")">Previous</a></li>
+                            @for (int i = 1; i <= numberPages; i++)
+                            {
+                                <li class="page-item @(selectedPage == i ? "active" : "")"><a class="page-link" href="@($"{Model.Url()}?page={i}")">@i</a></li>
+                            }
+                            <li class="page-item @(selectedPage >= numberPages ? "disabled" : "")"><a class="page-link" href="@($"{Model.Url()}?page={selectedPage + 1}")">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>
+

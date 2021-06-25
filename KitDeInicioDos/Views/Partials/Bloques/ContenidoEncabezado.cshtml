@@ -1,0 +1,43 @@
+﻿@inherits UmbracoViewPage<Umbraco.Core.Models.Blocks.BlockListItem>
+
+
+@{
+    AjustesGenerales ajustes = (AjustesGenerales)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("ajustesGenerales").FirstOrDefault();
+    var fotoOrigen = ajustes.URlbase;
+    var fotoTemporral = "tunupa.jpg";
+
+    var contentModel = Model.Content as ContenidoEncabezado;
+    var settingsModel = Model.Settings as ContenidoEncabezadoAjustes;
+    var bgImg = contentModel.Foto;
+    string bgImgStyle = string.Empty;
+    if (bgImg != null)
+    {
+        bgImgStyle = $"background-image: url( {bgImg.Url()})";
+    }
+    else if(!string.IsNullOrWhiteSpace(fotoOrigen))
+    {
+        bgImgStyle = $"background-image: url( {fotoOrigen}{fotoTemporral})";
+    }
+    string bgColour = settingsModel.ColorSobrepuesto != null ? $"background-color: {@settingsModel.ColorSobrepuesto}" : "";
+    var titulo = contentModel.Titulo.Any() && !string.IsNullOrWhiteSpace(contentModel.Titulo) ? contentModel.Titulo : "";
+    var subTitulo = contentModel.Subtitulo.Any() && !string.IsNullOrWhiteSpace(contentModel.Subtitulo) ? contentModel.Subtitulo : "";
+    var btnEnlace = contentModel.Vinculo;
+    var estilo = settingsModel.Estilo;
+}
+
+<section class="@(estilo != null ? $"mp{estilo}"  : "")">
+    <div class="position-relative overflow-hidden p-3 p-md-5 text-center bg-light text-light" style="@bgImgStyle; background-repeat: no-repeat; background-size: cover; background-position: center; position: relative">
+        <div class="overlay" style="@bgColour"></div>
+        <div class="col-md-5 p-lg-5 mx-auto my-5">
+            <h1 class="display-4 font-weight-normal">@titulo</h1>
+            <p class="lead font-weight-normal">@subTitulo</p>
+            @if (btnEnlace != null)
+            {
+                <a class="btn btn-primary btn-lg px-4 me-sm-3" href="@btnEnlace.Url">@btnEnlace.Name</a>
+            }
+
+        </div>
+        <div class="product-device box-shadow d-none d-md-block"></div>
+        <div class="product-device product-device-2 box-shadow d-none d-md-block"></div>
+    </div>
+</section>

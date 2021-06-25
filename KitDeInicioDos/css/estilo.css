@@ -1,0 +1,98 @@
+﻿body {
+    padding-top: 0;
+    padding-bottom: 0!important;
+
+}
+
+
+.overlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: #000;
+    opacity: .3;
+    top: 0;
+    left: 0;
+}
+
+.featurette-heading {
+    margin-top: 0;
+}
+
+.field-validation-error {
+    color: red;
+}
+
+.mpc9cad9 a {
+    color: #363F5A;
+}
+.mpc9cad9 {
+    background: #c9cad9;
+    color: #363F5A;
+}
+
+
+.mpd1d2f9 a,
+.mpd1d2f9 {
+    background: #d1d2f9;
+    color: #363F5A;
+}
+
+.mpa3bcf9 a {
+    color: #000000;
+}
+.mpa3bcf9 {
+    background: #a3bcf9;
+    color: #000000;
+}
+
+.mp7796cb a {
+    color: #000000;
+}
+.mp7796cb {
+    background: #7796cb;
+    color: #000000;
+}
+
+.mp576490 a {
+    color: #d1d2f9;
+}
+.mp576490 {
+    background: #576490;
+    color: #d1d2f9;
+}
+
+.mp000000 a {
+    color: #7796cb;
+}
+.mp000000 {
+    background: #000000;
+    color: #7796cb;
+}
+
+.mpffffff a {
+    color: #576490;
+}
+.mpffffff {
+    background: #ffffff;
+    color: #576490;
+}
+
+
+.navbar-brand {
+max-width: 250px;
+}
+
+/*.navbar-brand img{
+    width:100%;
+}*/
+
+/*.navbar-toggler-icon {
+    background: #ffffff;
+    color: #576490;
+}*/
+
+ul.navbar-nav li.activa a.nav-link {
+color: #000;
+background: #ccc!important;
+}

@@ -1,0 +1,41 @@
+﻿@inherits UmbracoViewPage<Umbraco.Core.Models.Blocks.BlockListItem>
+
+@{
+    var contentModel = Model.Content as ContenidoTexto;
+    var settingsModel = Model.Settings as ContenidoTextoAjustes;
+
+    var titulo = !string.IsNullOrWhiteSpace(contentModel.Titulo) ? contentModel.Titulo : "";
+    var subtitulo = !string.IsNullOrWhiteSpace(contentModel.Subtitulo) ? contentModel.Subtitulo : "";
+    var contenidoTexto = !string.IsNullOrWhiteSpace(contentModel.TextoAformatear.ToString()) ? contentModel.TextoAformatear.ToString() : "";
+    var estilo = settingsModel.Estilo;
+
+
+    @*Noticia noticiaContenido = (Noticia)Umbraco.ContentAtRoot().DescendantsOrSelfOfType("noticia").FirstOrDefault();
+    var autor = noticiaContenido.Autor;
+    var fechaPublicada = noticiaContenido.FechaDePublicacion;
+    var eslogan = noticiaContenido.Eslogan;
+    var categorias = noticiaContenido.Categorias;
+    var miniatura = noticiaContenido.Miniatura;
+
+    if (noticiaContenido != null)
+    {
+        <p> @autor </p>
+        <p>@fechaPublicada</p>
+        <p>@eslogan</p>
+        <p>@categorias</p>
+        <p>@miniatura</p>
+    }*@
+}
+
+<section class="@(estilo != null ? $"mp{estilo}"  : "")">
+    <div class="container">
+        <div class="row pt-5 pb-5">
+            <div class="col-md-12">
+                <h2>@titulo</h2>
+                <h4>@subtitulo</h4>
+
+                @Html.Raw(contenidoTexto)
+            </div>
+        </div>
+    </div>
+</section>
